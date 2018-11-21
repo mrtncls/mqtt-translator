@@ -1,0 +1,10 @@
+sudo: required
+dist: trusty
+
+jobs:
+  include:
+    - stage: build docker image
+      script:
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+      - docker build -t $DOCKER_USERNAME/mqtt-translator .
+      - docker push $DOCKER_USERNAME/mqtt-translator
