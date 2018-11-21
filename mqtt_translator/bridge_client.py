@@ -21,7 +21,7 @@ def received(client, userdata, msg):
     if not client.publishMsgHistory.has_message(hash):
         logging.debug("client=%s  topic=\"%s\" payload=\"%s\"", client._client_id, msg.topic, msg.payload)
         try:
-            client.other_client.publish(msg.topic, msg.payload)
+            client.other_client.publish(msg.topic, msg.payload, msg.qos, msg.retain)
         except Exception as e:
             logging.error('Publish failed: %s', e)
 
