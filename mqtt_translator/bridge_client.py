@@ -46,7 +46,7 @@ class BridgeClient(Client):
 
     def connect(self):
         
-        super().connect(self.config['host'], self.config['port'], 60)
+        super().connect(self.config['host'], self.config['port'], self.config['keepalive_interval'])
 
     def loop(self, timeout=0.01, max_packets=1):
 

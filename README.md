@@ -17,6 +17,7 @@ source:
   id: MQTT-Translator-Source
   host: source_mqttbroker
   port: 1883
+  keepalive_interval: 60
   topics:
     - world/#
   publish:
@@ -29,6 +30,7 @@ target:
   id: MQTT-Translator-Target
   host: target_mqttbroker
   port: 1883
+  keepalive_interval: 60
   topics:
     - world/#
   publish:
@@ -46,6 +48,7 @@ source:
   id: MQTT-Translator-Source
   host: mqttbroker
   port: 1883
+  keepalive_interval: 60
   topics:
     - 1235332/#
   publish:
@@ -54,6 +57,7 @@ target:
   id: MQTT-Translator-Target
   host: mqttbroker
   port: 1883
+  keepalive_interval: 60
   topics:
   publish:
     cooldown: 2
