@@ -8,6 +8,10 @@ MQTT topic translator which can act as a MQTT bridge.
 translate -c /config/configuration.yaml
 ```
 
+## Docker image
+
+https://hub.docker.com/r/mrtncls/mqtt-translator/
+
 ## Configuration
 
 ### Example: bridging with space replacement
