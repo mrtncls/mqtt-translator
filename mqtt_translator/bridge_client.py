@@ -49,6 +49,8 @@ class BridgeClient(Client):
         self.on_disconnect = disconnected
         self.on_message = received
 
+        self.__reconnecting = False
+
     def bridge(self, other_client):
 
         self.other_client = other_client
@@ -61,13 +63,19 @@ class BridgeClient(Client):
             self._reconnect()
 
     def _reconnect(self):
-        while True:
-            logging.info('%s reconnecting...', self._client_id)        
+
+        if self.__reconnecting:
+            return
+
+        self.__reconnecting = True
+        while self.__reconnecting:
+
             try:
+                logging.info('%s connecting...', self._client_id)        
                 self.reconnect()
-                break
+                self.__reconnecting = False
             except Exception as e:
-                logging.error('%s reconnect failed: %s', self._client_id, e)
+                logging.error('%s connect failed: %s', self._client_id, e)
                 time.sleep(1)
 
     def loop(self, timeout=0.01, max_packets=1):
