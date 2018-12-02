@@ -1,18 +1,26 @@
 import logging
-from paho.mqtt.client import Client, MQTTv311
+import time
+from paho.mqtt.client import Client, MQTTv311, MQTT_ERR_SUCCESS
 from .message_history import MessageHistory
 from .topic_translator import TopicTranslator
 
 def connected(client, userdata, flags, rc):
     
     logging.info('%s connected', client._client_id)
-    
+
     for topic in client.config['topics']:
         try:
             client.subscribe(topic)
             logging.debug('%s subscribed to %s', client._client_id, topic)
         except Exception as e:
-            logging.error('Subscribe failed: %s', e)
+            logging.error('%s subscribe failed: %s', client._client_id, e)
+
+def disconnected(client, userdata, rc):
+    
+    logging.info('%s disconnected with status %s', client._client_id, rc)
+
+    if (rc != MQTT_ERR_SUCCESS):
+        client._reconnect()
 
 def received(client, userdata, msg):
     
@@ -38,6 +46,7 @@ class BridgeClient(Client):
         self.__translator = TopicTranslator(publish_config['translator']['topic'])        
 
         self.on_connect = connected
+        self.on_disconnect = disconnected
         self.on_message = received
 
     def bridge(self, other_client):
@@ -46,7 +55,20 @@ class BridgeClient(Client):
 
     def connect(self):
         
-        super().connect(self.config['host'], self.config['port'], self.config['keepalive_interval'])
+        try:
+            super().connect(self.config['host'], self.config['port'], self.config['keepalive_interval'])
+        except:
+            self._reconnect()
+
+    def _reconnect(self):
+        while True:
+            logging.info('%s reconnecting...', self._client_id)        
+            try:
+                self.reconnect()
+                break
+            except Exception as e:
+                logging.error('%s reconnect failed: %s', self._client_id, e)
+                time.sleep(1)
 
     def loop(self, timeout=0.01, max_packets=1):
 
