@@ -15,13 +15,6 @@ def connected(client, userdata, flags, rc):
         except Exception as e:
             logging.error('%s subscribe failed: %s', client._client_id, e)
 
-def disconnected(client, userdata, rc):
-    
-    logging.info('%s disconnected with status %s', client._client_id, rc)
-
-    if (rc != MQTT_ERR_SUCCESS):
-        client._reconnect()
-
 def received(client, userdata, msg):
     
     hash = msg.topic+str(msg.payload)
@@ -46,10 +39,7 @@ class BridgeClient(Client):
         self.__translator = TopicTranslator(publish_config['translator']['topic'])        
 
         self.on_connect = connected
-        self.on_disconnect = disconnected
         self.on_message = received
-
-        self.__reconnecting = False
 
     def bridge(self, other_client):
 
@@ -59,29 +49,22 @@ class BridgeClient(Client):
         
         try:
             super().connect(self.config['host'], self.config['port'], self.config['keepalive_interval'])
-        except:
-            self._reconnect()
+        except Exception as e:
+            logging.info('%s connect failed: %s', self._client_id, e)
 
-    def _reconnect(self):
-
-        if self.__reconnecting:
-            return
-
-        self.__reconnecting = True
-        while self.__reconnecting:
-
-            try:
-                logging.info('%s connecting...', self._client_id)        
-                self.reconnect()
-                self.__reconnecting = False
-            except Exception as e:
-                logging.error('%s connect failed: %s', self._client_id, e)
-                time.sleep(1)
-
-    def loop(self, timeout=0.01, max_packets=1):
+    def loop(self):
 
         self.publishMsgHistory.purge()
-        return super().loop(timeout, max_packets)
+
+        loopResult = super().loop(0.01, 1)
+
+        if loopResult != MQTT_ERR_SUCCESS:
+            self._reconnect_wait()
+            try:
+                logging.info('%s connecting...', self._client_id)
+                self.reconnect()
+            except Exception as e:
+                logging.error('%s connect failed: %s', self._client_id, e)
 
     def publish(self, topic, payload=None, qos=0, retain=False):
 
