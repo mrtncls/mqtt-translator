@@ -24,7 +24,6 @@ class MessageHistory:
         self.__history[hash] = time_func()
 
     def purge(self):
-        pass
         for key in list(self.__history):
             if (self.__history[key] < time_func() - self.__validTimespanSec):
                 del self.__history[key]
