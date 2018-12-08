@@ -3,7 +3,6 @@ import yaml
 import argparse
 from mqtt_translator.bridge import Bridge
 
-
 def main():
 
     parser = argparse.ArgumentParser(description='MQTT topic translator which can act as a MQTT bridge.')
