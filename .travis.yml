@@ -9,7 +9,7 @@ install:
 script:
   - python -m unittest discover -v -s test -p test*.py      
 
-deploy:
+after_success:
   - export IMG_VERSION=`date +"%Y.%m.%d"`.$TRAVIS_BUILD_NUMBER
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin      
   - docker build -t $DOCKER_USERNAME/mqtt-translator:$IMG_VERSION .      
