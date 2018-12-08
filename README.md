@@ -2,7 +2,7 @@
 
 MQTT topic translator which can act as a MQTT bridge.
 
-![travis build status](https://travis-ci.com/mrtncls/mqtt-translator.svg?branch=master)
+[![Build Status](https://travis-ci.com/mrtncls/mqtt-translator.svg?branch=master)](https://travis-ci.com/mrtncls/mqtt-translator)
 
 ## Launch
 
