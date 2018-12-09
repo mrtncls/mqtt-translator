@@ -25,7 +25,7 @@ class TestBridgeClient(unittest.TestCase):
 
         bridge_client = BridgeClient(mocked_client, self.topics, 2, self.topic_translator_config)
 
-        self.assertEquals(bridge_client.id, '123')
+        self.assertEqual(bridge_client.id, '123')
 
 
     def test_connected_shouldsubscribetotopics(self):
