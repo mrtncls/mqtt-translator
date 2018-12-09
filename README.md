@@ -1,19 +1,22 @@
-# mqtt-translator
+# MQTT Translator
 
 MQTT topic translator which can act as a MQTT bridge.
 
 [![Build Status](https://travis-ci.com/mrtncls/mqtt-translator.svg?branch=master)](https://travis-ci.com/mrtncls/mqtt-translator)
+
 [![codecov](https://codecov.io/gh/mrtncls/mqtt-translator/branch/master/graph/badge.svg)](https://codecov.io/gh/mrtncls/mqtt-translator)
+
+## Docker image
+
+[![Docker image version](https://images.microbadger.com/badges/version/mrtncls/mqtt-translator.svg)](https://hub.docker.com/r/mrtncls/mqtt-translator)
+
+[![Docker image](https://images.microbadger.com/badges/image/mrtncls/mqtt-translator.svg)](https://hub.docker.com/r/mrtncls/mqtt-translator)
 
 ## Launch
 
 ```
-translate -c /config/configuration.yaml
+python -m mqtt_translator -c /config/configuration.yaml
 ```
-
-## Docker image
-
-https://hub.docker.com/r/mrtncls/mqtt-translator/
 
 ## Configuration
 
