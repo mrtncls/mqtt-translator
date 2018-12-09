@@ -1,22 +1,27 @@
 import logging
+from .paho_mqtt_client import PahoMqttClient
 from .bridge_client import BridgeClient
 
 class Bridge:
 
     def __init__(self, config):
 
-        self.__source = BridgeClient(config['source'])
-        self.__target = BridgeClient(config['target'])
+        sourceConfig = config['source']
+        sourcePublishConfig = sourceConfig['publish']
+        sourceClient = PahoMqttClient(sourceConfig['id'], sourceConfig['host'], sourceConfig['port'], sourceConfig['keepalive_interval'])
+        self._source = BridgeClient(sourceClient, sourceConfig['topics'], sourcePublishConfig['cooldown'], sourcePublishConfig['translator']['topic'])
 
-        self.__source.bridge(self.__target)
-        self.__target.bridge(self.__source)
+        targetConfig = config['target']
+        targetPublishConfig = targetConfig['publish']
+        targetClient = PahoMqttClient(targetConfig['id'], targetConfig['host'], targetConfig['port'], targetConfig['keepalive_interval'])
+        self._target = BridgeClient(targetClient, targetConfig['topics'], targetPublishConfig['cooldown'], targetPublishConfig['translator']['topic'])
 
-        self.__source.connect()
-        self.__target.connect()
-        
+        self._source.bridge(self._target)
+        self._target.bridge(self._source)
+
         logging.info('Bridge created')
 
     def loop(self):
 
-        self.__source.loop()
-        self.__target.loop()
+        self._source.loop()
+        self._target.loop()

@@ -1,77 +1,86 @@
 import logging
-import time
-from paho.mqtt.client import Client, MQTTv311, MQTT_ERR_SUCCESS
+from .paho_mqtt_client import PahoMqttClient
 from .message_history import MessageHistory
 from .topic_translator import TopicTranslator
 
-def connected(client, userdata, flags, rc):
-    
-    logging.info('%s connected', client._client_id)
-
-    for topic in client.config['topics']:
-        try:
-            client.subscribe(topic)
-            logging.debug('%s subscribed to %s', client._client_id, topic)
-        except Exception as e:
-            logging.error('%s subscribe failed: %s', client._client_id, e)
+def connected(client, userdata, flags, rc):    
+    userdata.connected()
 
 def received(client, userdata, msg):
-    
-    hash = msg.topic+str(msg.payload)
+    userdata.received(msg)
 
-    if not client.publishMsgHistory.has_message(hash):
-        logging.debug("client=%s  topic=\"%s\" payload=\"%s\"", client._client_id, msg.topic, msg.payload)
-        try:
-            client.other_client.publish(msg.topic, msg.payload, msg.qos, msg.retain)
-        except Exception as e:
-            logging.error('Publish failed: %s', e)
+class BridgeClient():
 
-class BridgeClient(Client):
+    def __init__(self, client, topics, cooldown, topic_translator_config):
 
-    def __init__(self, config, clean_session=True, userdata=None, protocol=MQTTv311, transport='tcp'):
+        self.client = client
+        self.id = client.id
+        self.topics = topics
+        self._publishMsgHistory = MessageHistory(cooldown)
+        self._translator = TopicTranslator(topic_translator_config)        
 
-        super().__init__(client_id=config['id'], clean_session=clean_session, userdata=userdata, protocol=protocol, transport=transport)
+        self.client.user_data_set(self)
 
-        self.config = config
+        self.client.on_connect = connected
+        self.client.on_message = received
 
-        publish_config = config['publish']
-        self.publishMsgHistory = MessageHistory(publish_config['cooldown'])
-        self.__translator = TopicTranslator(publish_config['translator']['topic'])        
 
-        self.on_connect = connected
-        self.on_message = received
+    def bridge(self, other):
 
-    def bridge(self, other_client):
+        self._other_bridge_client = other
 
-        self.other_client = other_client
-
-    def connect(self):
-        
-        try:
-            super().connect(self.config['host'], self.config['port'], self.config['keepalive_interval'])
-        except Exception as e:
-            logging.info('%s connect failed: %s', self._client_id, e)
 
     def loop(self):
 
-        self.publishMsgHistory.purge()
+        self._publishMsgHistory.purge()
+        self.client.loop()
 
-        loopResult = super().loop(0.01, 1)
 
-        if loopResult != MQTT_ERR_SUCCESS:
-            self._reconnect_wait()
+    def connected(self):
+
+        logging.info('%s connected', self.id)
+
+        for topic in self.topics:
             try:
-                logging.info('%s connecting...', self._client_id)
-                self.reconnect()
+                self.client.subscribe(topic)
+                logging.debug('%s subscribed to %s', self.id, topic)
             except Exception as e:
-                logging.error('%s connect failed: %s', self._client_id, e)
+                logging.error('%s subscribe failed: %s', self.id, e)
 
-    def publish(self, topic, payload=None, qos=0, retain=False):
 
-        translated_topic = self.__translator.translate(topic)
-        logging.debug("client=%s  topic=\"%s\" payload=\"%s\"", self._client_id, translated_topic, payload)
+    def received(self, msg):
 
-        hash = translated_topic+str(payload)
-        self.publishMsgHistory.add_message(hash)
+        logging.debug("%s received topic=\"%s\" payload=\"%s\"", self.id, msg.topic, msg.payload)
+
+        hash = self._getMessageHash(msg)
+
+        if self._isNotSentInCooldownPeriod(hash):
+            translated_topic = self._translator.translate(msg.topic)
+            self._publish_on_other_client(translated_topic, msg.payload, msg.qos, msg.retain)
+
+
+    def _getMessageHash(self, msg):
+
+        return msg.topic+str(msg.payload)
+
+
+    def _isNotSentInCooldownPeriod(self, hash):
+
+        return not self._publishMsgHistory.has_message(hash)
+
+    def _publish_on_other_client(self, topic, payload, qos, retain):
+
+        try:
+            self._other_bridge_client._publish(topic, payload, qos, retain)
+        except Exception as e:
+            logging.error('%s publish failed: %s', self.id, e)
+
+
+    def _publish(self, topic, payload=None, qos=0, retain=False):
+
+        logging.debug("%s published topic=\"%s\" payload=\"%s\"", self.id, topic, payload)
+
+        hash = topic+str(payload)
+        self._publishMsgHistory.add_message(hash)
         
-        return super().publish(translated_topic, payload=payload, qos=qos, retain=retain)
+        return self.client.publish(topic, payload=payload, qos=qos, retain=retain)
