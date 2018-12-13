@@ -59,6 +59,25 @@ class TestBridgeClient(unittest.TestCase):
         target_mocked_client.publish.assert_called_once_with('test_topic', payload='test_payload', qos=0, retain=True)
 
 
+    def test_received_shouldtranslateandpublishonotherclient(self):
+
+        source_mocked_client = Mock(spec=PahoMqttClient)
+        source_mocked_client.id = '123'
+        source_client = BridgeClient(source_mocked_client, self.topics, 2, self.topic_translator_config)
+        target_mocked_client = Mock(spec=PahoMqttClient)
+        target_mocked_client.id = '456'
+        target_client = BridgeClient(target_mocked_client, self.topics, 2, self.topic_translator_config)
+        source_client.bridge(target_client)
+        msg = MQTTMessage(topic='home'.encode('utf-8'))
+        msg.payload = 'test_payload'
+        msg.qos = 0
+        msg.retain = True
+
+        source_client.received(msg)
+
+        target_mocked_client.publish.assert_called_once_with('away', payload='test_payload', qos=0, retain=True)
+
+
     def test_givenpublishedmessageechoedwithincooldownperiod_shouldnotpublishagain(self):
 
         source_mocked_client = Mock(spec=PahoMqttClient)
