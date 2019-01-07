@@ -6,6 +6,7 @@ try:
 except AttributeError:
     time_func = time.time
 
+
 class MessageHistory:
 
     def __init__(self, validtTimespanSec):

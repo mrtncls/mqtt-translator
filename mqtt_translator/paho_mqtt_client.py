@@ -1,15 +1,16 @@
 import logging
 from paho.mqtt.client import Client, MQTTv311, MQTT_ERR_SUCCESS
 
+
 class PahoMqttClient(Client):
 
     def __init__(self, id, host, port, keepalive_interval):
 
-        super().__init__(client_id=id, clean_session=True, userdata=None, protocol=MQTTv311, transport='tcp')
+        super().__init__(client_id=id, clean_session=True,
+                         userdata=None, protocol=MQTTv311, transport='tcp')
 
         self.id = id
         self.connect_async(host, port, keepalive_interval)
-
 
     def loop(self):
 

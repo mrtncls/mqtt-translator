@@ -2,6 +2,7 @@ import unittest
 import time
 from mqtt_translator.bridge import Bridge
 
+
 class TestBridge(unittest.TestCase):
 
     def __init__(self, methodName='runTest'):
@@ -17,8 +18,8 @@ class TestBridge(unittest.TestCase):
                     'cooldown': 2,
                     'translator': {
                         'topic': [
-                            { 'from': 'xyz', 'to': '123' },
-                            { 'from': 'home', 'to': 'away' }
+                            {'from': 'xyz', 'to': '123'},
+                            {'from': 'home', 'to': 'away'}
                         ]
                     }
                 }
@@ -33,14 +34,14 @@ class TestBridge(unittest.TestCase):
                     'cooldown': 2,
                     'translator': {
                         'topic': [
-                            { 'from': 'xyz', 'to': '123' },
-                            { 'from': 'home', 'to': 'away' }
+                            {'from': 'xyz', 'to': '123'},
+                            {'from': 'home', 'to': 'away'}
                         ]
                     }
                 }
             }
         }
-        
+
         self.invalid_config = {
             'source': {
                 'id': 'source_test',
@@ -52,16 +53,13 @@ class TestBridge(unittest.TestCase):
 
         super().__init__(methodName=methodName)
 
-
     def test_init_withvalidconfig_shouldnotthrow(self):
 
         Bridge(self.valid_config)
 
-
     def test_init_withinvalidvalidconfig_shouldthrow(self):
 
-        self.assertRaises(Exception, Bridge, self.invalid_config)        
-
+        self.assertRaises(Exception, Bridge, self.invalid_config)
 
     def test_init_shouldcreatebridge(self):
 
