@@ -1,12 +1,12 @@
 from .message_translator_base import MessageTranslatorBase
 
 
-class TopicTranslator(MessageTranslatorBase):
+class TopicReplace(MessageTranslatorBase):
 
     @staticmethod
     def create(config):
-        if 'topic' in config:
-            return TopicTranslator(config['topic'])
+        if 'topicReplace' in config:
+            return TopicReplace(config['topicReplace'])
         else:
             return None
 
@@ -16,5 +16,4 @@ class TopicTranslator(MessageTranslatorBase):
             topic = topic.replace(topic_replace['from'], topic_replace['to'])
 
         msg.topic = topic.encode('utf-8')
-        return msg
 

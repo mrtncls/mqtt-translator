@@ -12,7 +12,7 @@ class TestBridgeClient(unittest.TestCase):
 
         self.topics = ['topic1', 'topic2']
         self.topic_translator_config = {
-            'topic': [
+            'topicReplace': [
                 {'from': 'xyz', 'to': '123'},
                 {'from': 'home', 'to': 'away'}
             ]

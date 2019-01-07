@@ -55,8 +55,8 @@ class BridgeClient():
         hash = self._getMessageHash(msg)
 
         if self._isNotSentInCooldownPeriod(hash):
-            translated_msg = self._translator.translate(msg)
-            self._publish_on_other_client(translated_msg)
+            self._translator.translate(msg)
+            self._publish_on_other_client(msg)
 
     def _getMessageHash(self, msg):
 

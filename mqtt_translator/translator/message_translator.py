@@ -1,4 +1,5 @@
-from .topic_translator import TopicTranslator
+from .topic_replace import TopicReplace
+from .topic_payload_substitute import TopicPayloadSubstitute
 
 
 class MessageTranslator:
@@ -7,7 +8,8 @@ class MessageTranslator:
         self.__config = config
 
         self._translators = []
-        self._add(TopicTranslator.create(config))
+        self._add(TopicReplace.create(config))
+        self._add(TopicPayloadSubstitute.create(config))
 
     def _add(self, translator):
         if translator is not None:
@@ -15,5 +17,4 @@ class MessageTranslator:
 
     def translate(self, msg):
         for translator in self._translators:
-            msg = translator.translate(msg)
-        return msg
+            translator.translate(msg)
