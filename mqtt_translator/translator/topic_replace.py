@@ -5,8 +5,8 @@ class TopicReplace(MessageTranslatorBase):
 
     @staticmethod
     def create(config):
-        if 'topicReplace' in config:
-            return TopicReplace(config['topicReplace'])
+        if 'topic_replace' in config:
+            return TopicReplace(config['topic_replace'])
         else:
             return None
 

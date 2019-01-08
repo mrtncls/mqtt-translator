@@ -16,12 +16,7 @@ class TestBridge(unittest.TestCase):
                 'topics': ['source_topic'],
                 'publish': {
                     'cooldown': 2,
-                    'translator': {
-                        'topic': [
-                            {'from': 'xyz', 'to': '123'},
-                            {'from': 'home', 'to': 'away'}
-                        ]
-                    }
+                    'translator': {}
                 }
             },
             'target': {
@@ -32,12 +27,7 @@ class TestBridge(unittest.TestCase):
                 'topics': ['target_topic'],
                 'publish': {
                     'cooldown': 2,
-                    'translator': {
-                        'topic': [
-                            {'from': 'xyz', 'to': '123'},
-                            {'from': 'home', 'to': 'away'}
-                        ]
-                    }
+                    'translator': {}
                 }
             }
         }

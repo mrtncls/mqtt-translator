@@ -19,6 +19,12 @@ or use the docker image on https://hub.docker.com/r/mrtncls/mqtt-translator
 
 ## Configuration
 
+Available translator modules:
+
+- Topic replace
+- Payload replace
+- Topic & payload substitute
+
 ### Example: bridging with space replacement
 
 ```yaml
@@ -32,7 +38,7 @@ source:
   publish:
     cooldown: 2
     translator:
-      topic:
+      - topic_replace:
         - from: '_' 
           to: ' '
 target:
@@ -45,12 +51,12 @@ target:
   publish:
     cooldown: 2
     translator:
-      topic:
+      - topic_replace:
         - from: ' ' 
           to: '_'
 ```
 
-### Example: topic translate
+### Example: topic replace
 
 ```yaml
 source:
@@ -62,6 +68,7 @@ source:
     - 1235332/#
   publish:
     cooldown: 2
+    translator:
 target:
   id: MQTT-Translator-Target
   host: mqttbroker
@@ -71,7 +78,41 @@ target:
   publish:
     cooldown: 2
     translator:
-      topic:
+      - topic_replace:
         - from: '1235332' 
           to: 'temp_sensor'
+```
+
+### Example: topic & payload substitution
+
+```yaml
+source:
+  id: MQTT-Translator-Source
+  host: mqttbroker
+  port: 1883
+  keepalive_interval: 60
+  topics:
+    - 1235332/#
+  publish:
+    cooldown: 2
+    translator:
+target:
+  id: MQTT-Translator-Target
+  host: mqttbroker
+  port: 1883
+  keepalive_interval: 60
+  topics:
+  publish:
+    cooldown: 2
+    translator:
+      - topic_replace:
+        - from: ' ' 
+          to: '_'
+        - from: '1235332' 
+          to: 'temp_sensor'
+      - topic_payload_subst:
+        - from_topic: 'home',
+          from_payload: '50',
+          to_topic: 'state',
+          to_payload: '50 degrees'
 ```

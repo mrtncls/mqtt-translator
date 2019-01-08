@@ -5,8 +5,8 @@ class TopicPayloadSubstitute(MessageTranslatorBase):
 
     @staticmethod
     def create(config):
-        if 'topicPayloadSubstitute' in config:
-            return TopicPayloadSubstitute(config['topicPayloadSubstitute'])
+        if 'topic_payload_subst' in config:
+            return TopicPayloadSubstitute(config['topic_payload_subst'])
         else:
             return None
 

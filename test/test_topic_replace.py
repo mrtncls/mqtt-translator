@@ -5,7 +5,7 @@ from paho.mqtt.client import MQTTMessage
 
 class TestTopicReplace(unittest.TestCase):
 
-    def test_translate_given2configitems_shouldtranslate(self):
+    def test_translate_givenMatchingConfig_shouldTranslate(self):
         config = [
             {'from': 'xyz', 'to': '123'},
             {'from': 'home', 'to': 'away'}
@@ -18,7 +18,7 @@ class TestTopicReplace(unittest.TestCase):
 
         self.assertEqual(message.topic, 'away 123')
 
-    def test_translate_givennotmatchingconfigitems_shouldnottranslate(self):
+    def test_translate_givenNotMatchingConfig_shouldNotTranslate(self):
         config = [
             {'from': 'xyz', 'to': '123'},
             {'from': 'home', 'to': 'away'}
@@ -31,7 +31,7 @@ class TestTopicReplace(unittest.TestCase):
 
         self.assertEqual(message.topic, 'baby G')
 
-    def test_translate_given2overlappingconfigitems_shouldtranslateinorder(self):
+    def test_translate_givenTwoMatchingConfigs_shouldTranslateInOrder(self):
         config = [
             {'from': 'xyz', 'to': '123'},
             {'from': '123', 'to': 'zyx'}

@@ -5,7 +5,7 @@ from paho.mqtt.client import MQTTMessage
 
 class TestTopicPayloadSubstitute(unittest.TestCase):
 
-    def test_translate_given2configitems_shouldtranslate(self):
+    def test_translate_givenMatchingConfig_shouldTranslate(self):
         config = [
             {
                 'from_topic': 'home',
@@ -30,7 +30,7 @@ class TestTopicPayloadSubstitute(unittest.TestCase):
         self.assertEqual(message.topic, 'state')
         self.assertEqual(message.payload, 'home60'.encode('utf-8'))
 
-    def test_translate_givennotmatchingconfigitems_shouldnottranslate(self):
+    def test_translate_givenNotMatchingConfig_shouldNotTranslate(self):
         config = [
             {
                 'from_topic': 'home',
