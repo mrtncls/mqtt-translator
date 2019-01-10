@@ -21,9 +21,7 @@ or use the docker image on https://hub.docker.com/r/mrtncls/mqtt-translator
 
 Available translator modules:
 
-- Topic replace
-- Payload replace
-- Topic & payload substitute
+- Replace: topic and/or payload substitution
 
 ### Example: bridging with space replacement
 

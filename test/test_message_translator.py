@@ -5,28 +5,14 @@ from paho.mqtt.client import MQTTMessage
 
 class TestMessageTranslator(unittest.TestCase):
 
-    def test_translate_givenConfigWithTopicReplace_shouldUseTopicReplaceTranslator(self):
+    def test_translate_givenConfigReplacer_shouldUseReplacer(self):
         config = {
-            'topic_replace': [
-                {'from': 'home', 'to': 'away'}
-            ]
-        }
-        translator = MessageTranslator(config)
-        message = MQTTMessage()
-        message.topic = 'home'.encode('utf-8')
-
-        translator.translate(message)
-
-        self.assertEqual(message.topic, 'away')
-
-    def test_translate_givenConfigWithTopicPayloadSubst_shouldUseTopicPayloadSubstitutionTranslator(self):
-        config = {
-            'topic_payload_subst': [
+            'replace': [
                 {
-                    'from_topic': 'home',
-                    'from_payload': '50',
-                    'to_topic': 'state',
-                    'to_payload': 'home50'
+                    'topic': 'home',
+                    'payload': '50',
+                    'new_topic': 'state',
+                    'new_payload': 'home50'
                 }
             ]
         }
@@ -39,20 +25,6 @@ class TestMessageTranslator(unittest.TestCase):
 
         self.assertEqual(message.topic, 'state')
         self.assertEqual(message.payload, 'home50'.encode('utf-8'))
-
-    def test_translate_givenConfigWithPayloadReplace_shouldUsePayloadTranslator(self):
-        config = {
-            'payload_replace': [
-                {'from': 'automatic', 'to': 'heat'}
-            ]
-        }
-        translator = MessageTranslator(config)
-        message = MQTTMessage()
-        message.payload = 'automatic'.encode('utf-8')
-
-        translator.translate(message)
-
-        self.assertEqual(message.payload, 'heat'.encode('utf-8'))
 
 
 if __name__ == '__main__':
