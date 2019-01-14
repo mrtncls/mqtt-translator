@@ -99,7 +99,7 @@ source:
   publish:
     cooldown: 2
     translator:
-      topic:
+      - topic:
         - from: '_' 
           to: ' '
 target:
@@ -112,7 +112,7 @@ target:
   publish:
     cooldown: 2
     translator:
-      topic:
+      - topic:
         - from: ' ' 
           to: '_'
 ```
@@ -139,7 +139,7 @@ target:
   publish:
     cooldown: 2
     translator:
-      topic:
+      - topic:
         - from: '1235332' 
           to: 'temp_sensor'
 ```

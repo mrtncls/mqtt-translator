@@ -11,12 +11,12 @@ class TestBridgeClient(unittest.TestCase):
     def __init__(self, methodName='runTest'):
 
         self.topics = ['topic1', 'topic2']
-        self.topic_translator_config = {
+        self.topic_translator_config = [{
             'topic': [
                 {'from': 'xyz', 'to': '123'},
                 {'from': 'home', 'to': 'away'}
             ]
-        }
+        }]
 
         super().__init__(methodName=methodName)
 

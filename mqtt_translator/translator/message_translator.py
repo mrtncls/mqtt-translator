@@ -6,7 +6,8 @@ class MessageTranslator:
         self.__config = config
 
         self._translators = []
-        self._add(RegExpTranslator.create(config))
+        for configLine in config:
+            self._add(RegExpTranslator.create(configLine))
 
     def _add(self, translator):
         if translator is not None:

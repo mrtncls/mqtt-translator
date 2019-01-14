@@ -6,7 +6,7 @@ from paho.mqtt.client import MQTTMessage
 class TestMessageTranslator(unittest.TestCase):
 
     def test_translate_givenConfigRegExp_shouldUseRegExp(self):
-        config = {
+        config = [{
             'regexp': [
                 {
                     'topic_search': 'temp/(auto)',
@@ -15,7 +15,7 @@ class TestMessageTranslator(unittest.TestCase):
                     'payload_template': '[payload.2] - [topic.1]',
                 }
             ]
-        }
+        }]
         translator = MessageTranslator(config)
         message = MQTTMessage()
         message.topic = 'my/test/temp/auto'.encode('utf-8')
@@ -25,6 +25,40 @@ class TestMessageTranslator(unittest.TestCase):
 
         self.assertEqual(message.topic, 'my/test/temp/heat')
         self.assertEqual(message.payload, '99 - auto'.encode('utf-8'))
+
+    def test_translate_givenConfigTopic_shouldUseRegExp(self):
+        config = [{
+            'topic': [
+                {
+                    'from': 'you',
+                    'to': 'me'
+                }
+            ]
+        }]
+        translator = MessageTranslator(config)
+        message = MQTTMessage()
+        message.topic = 'my/test/for/you'.encode('utf-8')
+
+        translator.translate(message)
+
+        self.assertEqual(message.topic, 'my/test/for/me')
+
+    def test_translate_givenConfigPayload_shouldUseRegExp(self):
+        config = [{
+            'payload': [
+                {
+                    'from': 'you',
+                    'to': 'me'
+                }
+            ]
+        }]
+        translator = MessageTranslator(config)
+        message = MQTTMessage()
+        message.payload = 'you'.encode('utf-8')
+
+        translator.translate(message)
+
+        self.assertEqual(message.payload, 'me'.encode('utf-8'))
 
 
 if __name__ == '__main__':
