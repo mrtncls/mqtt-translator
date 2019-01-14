@@ -1,5 +1,4 @@
-from .replacer import Replacer
-
+from .regexp_translator import RegExpTranslator
 
 class MessageTranslator:
 
@@ -7,7 +6,7 @@ class MessageTranslator:
         self.__config = config
 
         self._translators = []
-        self._add(Replacer.create(config))
+        self._add(RegExpTranslator.create(config))
 
     def _add(self, translator):
         if translator is not None:
