@@ -19,7 +19,7 @@ class PahoMqttClient(Client):
         if loopResult != MQTT_ERR_SUCCESS:
             self._reconnect_wait()
             try:
-                logging.info('%s connecting...', self._client_id)
+                logging.info(f'{self._client_id} connecting...')
                 self.reconnect()
             except Exception as e:
-                logging.error('%s connect failed: %s', self._client_id, e)
+                logging.error(f'{self._client_id} connect failed: {e}')

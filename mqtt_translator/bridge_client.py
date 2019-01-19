@@ -38,19 +38,18 @@ class BridgeClient():
 
     def connected(self):
 
-        logging.info('%s connected', self.id)
+        logging.info(f'{self.id} connected')
 
         for topic in self.topics:
             try:
                 self.client.subscribe(topic)
-                logging.debug('%s subscribed to %s', self.id, topic)
+                logging.debug(f'{self.id} subscribed to {topic}')
             except Exception as e:
-                logging.error('%s subscribe failed: %s', self.id, e)
+                logging.error(f'{self.id} subscribe failed: {e}')
 
     def received(self, msg):
 
-        logging.debug("%s received topic=\"%s\" payload=\"%s\"",
-                      self.id, msg.topic, msg.payload)
+        logging.debug(f'{self.id} received topic={msg.topic} payload={msg.payload} qos={msg.qos} retain={msg.retain}')
 
         hash = self._getMessageHash(msg)
 
@@ -71,12 +70,11 @@ class BridgeClient():
         try:
             self._other_bridge_client._publish(msg)
         except Exception as e:
-            logging.error('%s publish failed: %s', self.id, e)
+            logging.error(f'{self.id} publish failed: {e}')
 
     def _publish(self, msg):
 
-        logging.debug("%s published topic=\"%s\" payload=\"%s\"",
-                      self.id, msg.topic, msg.payload)
+        logging.debug(f'{self.id} published topic={msg.topic} payload={msg.payload} qos={msg.qos} retain={msg.retain}')
 
         hash = msg.topic+str(msg.payload)
         self._publishMsgHistory.add_message(hash)
