@@ -4,14 +4,6 @@ from .message_history import MessageHistory
 from .translator.message_translator import MessageTranslator
 
 
-def connected(client, userdata, flags, rc):
-    userdata.connected()
-
-
-def received(client, userdata, msg):
-    userdata.received(msg)
-
-
 class BridgeClient():
 
     def __init__(self, client, topics, cooldown, translator_config):
@@ -22,21 +14,10 @@ class BridgeClient():
         self._publishMsgHistory = MessageHistory(cooldown)
         self._translator = MessageTranslator(translator_config)
 
-        self.client.user_data_set(self)
+        self.client.on_connect = self.on_connect
+        self.client.on_message = self.on_message
 
-        self.client.on_connect = connected
-        self.client.on_message = received
-
-    def bridge(self, other):
-
-        self._other_bridge_client = other
-
-    def loop(self):
-
-        self._publishMsgHistory.purge()
-        self.client.loop()
-
-    def connected(self):
+    def on_connect(self, client, userdata, flags, rc):
 
         logging.info(f'{self.id} connected')
 
@@ -47,15 +28,25 @@ class BridgeClient():
             except Exception as e:
                 logging.error(f'{self.id} subscribe failed: {e}')
 
-    def received(self, msg):
+    def on_message(self, client, userdata, msg):
 
-        logging.debug(f'{self.id} received topic={msg.topic} payload={msg.payload} qos={msg.qos} retain={msg.retain}')
+        logging.debug(
+            f'{self.id} received topic={msg.topic} payload={msg.payload} qos={msg.qos} retain={msg.retain}')
 
         hash = self._getMessageHash(msg)
 
         if self._isNotSentInCooldownPeriod(hash):
             self._translator.translate(msg)
             self._publish_on_other_client(msg)
+
+    def bridge(self, other):
+
+        self._other_bridge_client = other
+
+    def loop(self):
+
+        self._publishMsgHistory.purge()
+        self.client.loop()
 
     def _getMessageHash(self, msg):
 
@@ -74,7 +65,8 @@ class BridgeClient():
 
     def _publish(self, msg):
 
-        logging.debug(f'{self.id} published topic={msg.topic} payload={msg.payload} qos={msg.qos} retain={msg.retain}')
+        logging.debug(
+            f'{self.id} published topic={msg.topic} payload={msg.payload} qos={msg.qos} retain={msg.retain}')
 
         hash = msg.topic+str(msg.payload)
         self._publishMsgHistory.add_message(hash)

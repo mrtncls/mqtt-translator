@@ -37,7 +37,7 @@ class TestBridgeClient(unittest.TestCase):
         bridge_client = BridgeClient(
             mocked_client, self.topics, 2, self.topic_translator_config)
 
-        bridge_client.connected()
+        mocked_client.on_connect(mocked_client, bridge_client, None, None)
 
         calls = [call('topic1'), call('topic2')]
         mocked_client.subscribe.assert_has_calls(calls)
@@ -58,7 +58,7 @@ class TestBridgeClient(unittest.TestCase):
         msg.qos = 0
         msg.retain = True
 
-        source_client.received(msg)
+        source_mocked_client.on_message(source_mocked_client, source_client, msg)
 
         target_mocked_client.publish.assert_called_once_with(
             'test_topic', payload='test_payload', qos=0, retain=True)
@@ -79,7 +79,7 @@ class TestBridgeClient(unittest.TestCase):
         msg.qos = 0
         msg.retain = True
 
-        source_client.received(msg)
+        source_mocked_client.on_message(source_mocked_client, source_client, msg)
 
         target_mocked_client.publish.assert_called_once_with(
             'away', payload='test_payload', qos=0, retain=True)
@@ -101,8 +101,8 @@ class TestBridgeClient(unittest.TestCase):
         msg.qos = 0
         msg.retain = True
 
-        target_client.received(msg)
-        source_client.received(msg)
+        target_mocked_client.on_message(target_mocked_client, target_client, msg)
+        source_mocked_client.on_message(source_mocked_client, source_client, msg)
 
         source_mocked_client.publish.assert_called_once()
         target_mocked_client.publish.assert_not_called()
@@ -124,9 +124,9 @@ class TestBridgeClient(unittest.TestCase):
         msg.qos = 0
         msg.retain = True
 
-        target_client.received(msg)
+        target_mocked_client.on_message(target_mocked_client, target_client, msg)
         time.sleep(2)
-        source_client.received(msg)
+        source_mocked_client.on_message(source_mocked_client, source_client, msg)
 
         source_mocked_client.publish.assert_called_once()
         target_mocked_client.publish.assert_called_once()
