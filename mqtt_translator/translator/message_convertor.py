@@ -1,4 +1,5 @@
 from .regexp_translator import RegExpTranslator
+from .set_retain import SetRetain
 
 class MessageConvertor:
 
@@ -8,6 +9,7 @@ class MessageConvertor:
         self._actions = []
         for configLine in config:
             self._add(RegExpTranslator.create(configLine))
+            self._add(SetRetain.create(configLine))
 
     def _add(self, action):
         if action is not None:

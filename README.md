@@ -84,6 +84,20 @@ regexp:
 | Original | house/87946548/auto | bedroom,24,auto |
 | Translated | house/bedroom/temperature | 24 auto |
 
+### Set retain
+
+Set retain flag of a message.
+Messages are matching on topic by using a RE fullmatch expression (see https://docs.python.org/3/library/re.html#re.fullmatch)
+
+*Example config:*
+
+```yaml
+set_retain:
+  - topic_fullsearch: .*temp
+    retain: True
+  - ...
+```
+
 ## Examples
 
 ### Bridging with space replacement
@@ -98,7 +112,7 @@ source:
     - world/#
   publish:
     cooldown: 2
-    translator:
+    convert:
       - topic:
         - from: '_' 
           to: ' '
@@ -111,7 +125,7 @@ target:
     - world/#
   publish:
     cooldown: 2
-    translator:
+    convert:
       - topic:
         - from: ' ' 
           to: '_'
@@ -129,7 +143,7 @@ source:
     - 1235332/#
   publish:
     cooldown: 2
-    translator:
+    convert:
 target:
   id: MQTT-Translator-Target
   host: mqttbroker
@@ -138,7 +152,7 @@ target:
   topics:
   publish:
     cooldown: 2
-    translator:
+    convert:
       - topic:
         - from: '1235332' 
           to: 'temp_sensor'

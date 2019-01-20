@@ -60,6 +60,23 @@ class TestMessageConvertor(unittest.TestCase):
 
         self.assertEqual(message.payload, 'me'.encode('utf-8'))
 
+    def test_convert_givenConfigSetRetain_shouldUseSetRetain(self):
+        config = [{
+            'set_retain': [
+                {
+                    'retain': True
+                }
+            ]
+        }]
+        convertor = MessageConvertor(config)
+        message = MQTTMessage()
+        message.topic = 'home/kitchen/temp/auto'.encode('utf-8')
+        message.retain = False
+
+        convertor.convert(message)
+
+        self.assertTrue(message.retain)
+
 
 if __name__ == '__main__':
     unittest.main()
