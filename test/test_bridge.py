@@ -16,7 +16,7 @@ class TestBridge(unittest.TestCase):
                 'topics': ['source_topic'],
                 'publish': {
                     'cooldown': 2,
-                    'translator': {}
+                    'convert': {}
                 }
             },
             'target': {
@@ -27,7 +27,7 @@ class TestBridge(unittest.TestCase):
                 'topics': ['target_topic'],
                 'publish': {
                     'cooldown': 2,
-                    'translator': {}
+                    'convert': {}
                 }
             }
         }

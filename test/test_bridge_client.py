@@ -11,7 +11,7 @@ class TestBridgeClient(unittest.TestCase):
     def __init__(self, methodName='runTest'):
 
         self.topics = ['topic1', 'topic2']
-        self.topic_translator_config = [{
+        self.topic_convert_config = [{
             'topic': [
                 {'from': 'xyz', 'to': '123'},
                 {'from': 'home', 'to': 'away'}
@@ -26,7 +26,7 @@ class TestBridgeClient(unittest.TestCase):
         mocked_client.id = '123'
 
         bridge_client = BridgeClient(
-            mocked_client, self.topics, 2, self.topic_translator_config)
+            mocked_client, self.topics, 2, self.topic_convert_config)
 
         self.assertEqual(bridge_client.id, '123')
 
@@ -35,7 +35,7 @@ class TestBridgeClient(unittest.TestCase):
         mocked_client = Mock(spec=PahoMqttClient)
         mocked_client.id = '123'
         bridge_client = BridgeClient(
-            mocked_client, self.topics, 2, self.topic_translator_config)
+            mocked_client, self.topics, 2, self.topic_convert_config)
 
         mocked_client.on_connect(mocked_client, bridge_client, None, None)
 
@@ -47,11 +47,11 @@ class TestBridgeClient(unittest.TestCase):
         source_mocked_client = Mock(spec=PahoMqttClient)
         source_mocked_client.id = '123'
         source_client = BridgeClient(
-            source_mocked_client, self.topics, 2, self.topic_translator_config)
+            source_mocked_client, self.topics, 2, self.topic_convert_config)
         target_mocked_client = Mock(spec=PahoMqttClient)
         target_mocked_client.id = '456'
         target_client = BridgeClient(
-            target_mocked_client, self.topics, 2, self.topic_translator_config)
+            target_mocked_client, self.topics, 2, self.topic_convert_config)
         source_client.bridge(target_client)
         msg = MQTTMessage(topic='test_topic'.encode('utf-8'))
         msg.payload = 'test_payload'
@@ -68,11 +68,11 @@ class TestBridgeClient(unittest.TestCase):
         source_mocked_client = Mock(spec=PahoMqttClient)
         source_mocked_client.id = '123'
         source_client = BridgeClient(
-            source_mocked_client, self.topics, 2, self.topic_translator_config)
+            source_mocked_client, self.topics, 2, self.topic_convert_config)
         target_mocked_client = Mock(spec=PahoMqttClient)
         target_mocked_client.id = '456'
         target_client = BridgeClient(
-            target_mocked_client, self.topics, 2, self.topic_translator_config)
+            target_mocked_client, self.topics, 2, self.topic_convert_config)
         source_client.bridge(target_client)
         msg = MQTTMessage(topic='home'.encode('utf-8'))
         msg.payload = 'test_payload'
@@ -89,11 +89,11 @@ class TestBridgeClient(unittest.TestCase):
         source_mocked_client = Mock(spec=PahoMqttClient)
         source_mocked_client.id = '123'
         source_client = BridgeClient(
-            source_mocked_client, self.topics, 2, self.topic_translator_config)
+            source_mocked_client, self.topics, 2, self.topic_convert_config)
         target_mocked_client = Mock(spec=PahoMqttClient)
         target_mocked_client.id = '456'
         target_client = BridgeClient(
-            target_mocked_client, self.topics, 2, self.topic_translator_config)
+            target_mocked_client, self.topics, 2, self.topic_convert_config)
         source_client.bridge(target_client)
         target_client.bridge(source_client)
         msg = MQTTMessage(topic='test_topic'.encode('utf-8'))
@@ -112,11 +112,11 @@ class TestBridgeClient(unittest.TestCase):
         source_mocked_client = Mock(spec=PahoMqttClient)
         source_mocked_client.id = '123'
         source_client = BridgeClient(
-            source_mocked_client, self.topics, 2, self.topic_translator_config)
+            source_mocked_client, self.topics, 2, self.topic_convert_config)
         target_mocked_client = Mock(spec=PahoMqttClient)
         target_mocked_client.id = '456'
         target_client = BridgeClient(
-            target_mocked_client, self.topics, 2, self.topic_translator_config)
+            target_mocked_client, self.topics, 2, self.topic_convert_config)
         source_client.bridge(target_client)
         target_client.bridge(source_client)
         msg = MQTTMessage(topic='test_topic'.encode('utf-8'))

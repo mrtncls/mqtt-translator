@@ -18,7 +18,7 @@ class TestRegExpTranslatorTopic(unittest.TestCase):
     def test_translate_givenSearchWithMatch_shouldRender(self):
         translator = RegExpTranslator(self.config)
 
-        translator.translate(self.message)
+        translator.perform(self.message)
 
         self.assertEqual(self.message.topic, 'my/test/Your topic is my topic')
 
@@ -30,7 +30,7 @@ class TestRegExpTranslatorTopic(unittest.TestCase):
             }
         ])
 
-        translator.translate(self.message)
+        translator.perform(self.message)
 
         self.assertEqual(self.message.topic, 'my/test/case')
 
@@ -38,7 +38,7 @@ class TestRegExpTranslatorTopic(unittest.TestCase):
         self.config[0]['topic_search'] = '(cipot)'
         translator = RegExpTranslator(self.config)
 
-        translator.translate(self.message)
+        translator.perform(self.message)
 
         self.assertEqual(self.message.topic, 'my/test/topic')
 
@@ -46,7 +46,7 @@ class TestRegExpTranslatorTopic(unittest.TestCase):
         del self.config[0]['topic_search']
         translator = RegExpTranslator(self.config)
 
-        translator.translate(self.message)
+        translator.perform(self.message)
 
         self.assertEqual(self.message.topic, 'my/test/topic')
 
@@ -55,20 +55,20 @@ class TestRegExpTranslatorTopic(unittest.TestCase):
         translator = RegExpTranslator(self.config)
 
         with self.assertRaises(Exception):
-            translator.translate(self.message)
+            translator.perform(self.message)
 
     def test_translate_givenSearchWithoutGroupButVarInTemplate_shouldRaise(self):
         self.config[0]['topic_search'] = 'topic'
         translator = RegExpTranslator(self.config)
 
         with self.assertRaises(Exception):
-            translator.translate(self.message)
+            translator.perform(self.message)
 
     def test_translate_givenNoTemplate_shouldNotRender(self):
         del self.config[0]['topic_template']
         translator = RegExpTranslator(self.config)
 
-        translator.translate(self.message)
+        translator.perform(self.message)
 
         self.assertEqual(self.message.topic, 'my/test/topic')
 

@@ -12,14 +12,14 @@ class Bridge:
         sourceClient = PahoMqttClient(
             sourceConfig['id'], sourceConfig['host'], sourceConfig['port'], sourceConfig['keepalive_interval'])
         self._source = BridgeClient(
-            sourceClient, sourceConfig['topics'], sourcePublishConfig['cooldown'], sourcePublishConfig['translator'])
+            sourceClient, sourceConfig['topics'], sourcePublishConfig['cooldown'], sourcePublishConfig['convert'])
 
         targetConfig = config['target']
         targetPublishConfig = targetConfig['publish']
         targetClient = PahoMqttClient(
             targetConfig['id'], targetConfig['host'], targetConfig['port'], targetConfig['keepalive_interval'])
         self._target = BridgeClient(
-            targetClient, targetConfig['topics'], targetPublishConfig['cooldown'], targetPublishConfig['translator'])
+            targetClient, targetConfig['topics'], targetPublishConfig['cooldown'], targetPublishConfig['convert'])
 
         self._source.bridge(self._target)
         self._target.bridge(self._source)

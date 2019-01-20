@@ -1,18 +1,18 @@
 import logging
 from .paho_mqtt_client import PahoMqttClient
 from .message_history import MessageHistory
-from .translator.message_translator import MessageTranslator
+from .translator.message_convertor import MessageConvertor
 
 
 class BridgeClient():
 
-    def __init__(self, client, topics, cooldown, translator_config):
+    def __init__(self, client, topics, cooldown, convert_config):
 
         self.client = client
         self.id = client.id
         self.topics = topics
         self._publishMsgHistory = MessageHistory(cooldown)
-        self._translator = MessageTranslator(translator_config)
+        self._convertor = MessageConvertor(convert_config)
 
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
@@ -36,7 +36,7 @@ class BridgeClient():
         hash = self._getMessageHash(msg)
 
         if self._isNotSentInCooldownPeriod(hash):
-            self._translator.translate(msg)
+            self._convertor.convert(msg)
             self._publish_on_other_client(msg)
 
     def bridge(self, other):

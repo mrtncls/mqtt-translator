@@ -1,9 +1,9 @@
 import re
 import copy
-from .message_translator_base import MessageTranslatorBase
+from .message_action import MessageAction
 
 
-class RegExpTranslator(MessageTranslatorBase):
+class RegExpTranslator(MessageAction):
 
     @staticmethod
     def create(config):
@@ -32,7 +32,7 @@ class RegExpTranslator(MessageTranslatorBase):
             payloadConfig['payload_search'] = payloadConfig.pop('from')
             payloadConfig['payload_template'] = payloadConfig.pop('to')
 
-    def translate(self, msg):
+    def perform(self, msg):
         for config in self._config:
             topic_match = self._matchTopic(config, msg)
             payload_match = self._matchPayload(config, msg)

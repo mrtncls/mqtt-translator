@@ -21,7 +21,7 @@ class TestRegExpTranslator(unittest.TestCase):
     def test_translate_givenSearchWithMatch_shouldRender(self):
         translator = RegExpTranslator(self.config)
 
-        translator.translate(self.message)
+        translator.perform(self.message)
 
         self.assertEqual(self.message.topic, 'my/test/temp/heat')
         self.assertEqual(self.message.payload, '99 - auto'.encode('utf-8'))
@@ -31,7 +31,7 @@ class TestRegExpTranslator(unittest.TestCase):
         self.config[0]['payload_template'] = '[payload.2]'
         translator = RegExpTranslator(self.config)
 
-        translator.translate(self.message)
+        translator.perform(self.message)
 
         self.assertEqual(self.message.topic, 'temp/heat')
         self.assertEqual(self.message.payload, '99'.encode('utf-8'))
@@ -42,7 +42,7 @@ class TestRegExpTranslator(unittest.TestCase):
         self.config[0]['payload_template'] = '[topic.1]'
         translator = RegExpTranslator(self.config)
 
-        translator.translate(self.message)
+        translator.perform(self.message)
 
         self.assertEqual(self.message.topic, 'my/test/temp/auto')
         self.assertEqual(self.message.payload, 'auto'.encode('utf-8'))
@@ -64,7 +64,7 @@ class TestRegExpTranslator(unittest.TestCase):
         ]        
         translator = RegExpTranslator(self.config)
 
-        translator.translate(self.message)
+        translator.perform(self.message)
 
         self.assertEqual(self.message.topic, 'my/test/heat')
         self.assertEqual(self.message.payload, '99'.encode('utf-8'))
@@ -86,7 +86,7 @@ class TestRegExpTranslator(unittest.TestCase):
         ]        
         translator = RegExpTranslator(self.config)
 
-        translator.translate(self.message)
+        translator.perform(self.message)
 
         self.assertEqual(self.message.topic, 'my/test/temp/heat')
         self.assertEqual(self.message.payload, '99 - auto'.encode('utf-8'))

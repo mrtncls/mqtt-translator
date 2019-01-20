@@ -18,7 +18,7 @@ class TestRegExpTranslatorPayload(unittest.TestCase):
     def test_translate_givenSearchWithMatch_shouldRender(self):
         translator = RegExpTranslator(self.config)
 
-        translator.translate(self.message)
+        translator.perform(self.message)
 
         self.assertEqual(self.message.payload,
                          'Temperature is 99'.encode('utf-8'))
@@ -31,7 +31,7 @@ class TestRegExpTranslatorPayload(unittest.TestCase):
             }
         ])
 
-        translator.translate(self.message)
+        translator.perform(self.message)
 
         self.assertEqual(self.message.payload, 'payload 88'.encode('utf-8'))
 
@@ -39,7 +39,7 @@ class TestRegExpTranslatorPayload(unittest.TestCase):
         self.config[0]['payload_search'] = r'daolyap (\d+)'
         translator = RegExpTranslator(self.config)
 
-        translator.translate(self.message)
+        translator.perform(self.message)
 
         self.assertEqual(self.message.payload,
                          'payload 99'.encode('utf-8'))
@@ -48,7 +48,7 @@ class TestRegExpTranslatorPayload(unittest.TestCase):
         del self.config[0]['payload_search']
         translator = RegExpTranslator(self.config)
 
-        translator.translate(self.message)
+        translator.perform(self.message)
 
         self.assertEqual(self.message.payload,
                          'payload 99'.encode('utf-8'))
@@ -58,20 +58,20 @@ class TestRegExpTranslatorPayload(unittest.TestCase):
         translator = RegExpTranslator(self.config)
 
         with self.assertRaises(Exception):
-            translator.translate(self.message)
+            translator.perform(self.message)
 
     def test_translate_givenSearchWithoutGroupButVarInTemplate_shouldRaise(self):
         self.config[0]['payload_search'] = 'payload'
         translator = RegExpTranslator(self.config)
 
         with self.assertRaises(Exception):
-            translator.translate(self.message)
+            translator.perform(self.message)
 
     def test_translate_givenNoTemplate_shouldNotRender(self):
         del self.config[0]['payload_template']
         translator = RegExpTranslator(self.config)
 
-        translator.translate(self.message)
+        translator.perform(self.message)
 
         self.assertEqual(self.message.payload,
                          'payload 99'.encode('utf-8'))
