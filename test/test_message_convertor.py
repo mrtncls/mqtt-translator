@@ -77,6 +77,63 @@ class TestMessageConvertor(unittest.TestCase):
 
         self.assertTrue(message.retain)
 
+    def test_convert_givenConfigWithRegExpAndTopic_shouldTranslateInOrder(self):
+        config = [{
+            'topic': [
+                {
+                    'from': 'you',
+                    'to': 'me'
+                },
+                {
+                    'from': 'me',
+                    'to': 'dad'
+                }
+            ]
+        },
+        {
+            'regexp': [
+                {
+                    'topic_search': 'dad',
+                    'topic_template': 'mom',
+                },
+                {
+                    'topic_search': 'mom',
+                    'topic_template': 'sis',
+                }
+            ]
+        }]
+        convertor = MessageConvertor(config)
+        message = MQTTMessage()
+        message.topic = 'my/test/for/you'.encode('utf-8')
+
+        convertor.convert(message)
+
+        self.assertEqual(message.topic, 'my/test/for/sis')
+
+    def test_convert_givenConfigWithTopicAndRegExp_shouldUseBothInOrder(self):
+        config = [{
+            'regexp': [
+                {
+                    'topic_search': 'you',
+                    'topic_template': 'me',
+                }
+            ]
+        },
+        {
+            'topic': [
+                {
+                    'from': 'me',
+                    'to': 'mom'
+                }
+            ]
+        }]
+        convertor = MessageConvertor(config)
+        message = MQTTMessage()
+        message.topic = 'my/test/for/you'.encode('utf-8')
+
+        convertor.convert(message)
+
+        self.assertEqual(message.topic, 'my/test/for/mom')
 
 if __name__ == '__main__':
     unittest.main()
