@@ -18,6 +18,25 @@ class TestRegExpPerform(unittest.TestCase):
             }
         ]
 
+    def test_perform_givenEmptyPayloadTemplate_shouldRender(self):
+        self.config = [
+            {
+                'topic_search': '(huis/.*)/thermostaat/set_mode',
+                'payload_search': 'dry',
+                'topic_template': '[topic.1]/boost',
+                'payload_template': ''
+            }
+        ]
+        translator = RegExpTranslator(self.config)
+        self.message = MQTTMessage()
+        self.message.topic = 'huis/berging_bureau/thermostaat/set_mode'.encode('utf-8')
+        self.message.payload = 'dry'.encode('utf-8')
+
+        translator.perform(self.message)
+
+        self.assertEqual(self.message.topic, 'huis/berging_bureau/boost')
+        self.assertEqual(self.message.payload, ''.encode('utf-8'))
+
     def test_perform_givenSearchWithMatch_shouldRender(self):
         translator = RegExpTranslator(self.config)
 
