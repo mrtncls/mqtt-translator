@@ -144,6 +144,9 @@ source:
   publish:
     cooldown: 2
     convert:
+      - topic:
+        - from: '1235332' 
+          to: 'temp_sensor'
 target:
   id: MQTT-Translator-Target
   host: mqttbroker
