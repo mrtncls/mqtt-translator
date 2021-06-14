@@ -12,7 +12,7 @@ def main():
                         help='Configuration YAML file')
     parser.add_argument('-v ', '--version',
                         action='version', version='%(prog)s 0.1')
-    parser.add_argument('-d ', '--debug', action="count", default=0,
+    parser.add_argument('-d ', '--debug', action="count", default=1,
                         help='Increase log level, add more -d to increase verbosity')
 
     args = parser.parse_args()
