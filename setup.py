@@ -6,6 +6,6 @@ setup(
    description='MQTT bridge with support for message translation',
    author='Maarten Claes',
    author_email='mrtncls@gmail.com',
-   packages=['mqtt-translationbridge'],
+   packages=['mqtt_translator'],
    install_requires=['PyYAML', 'paho-mqtt'],
 )
